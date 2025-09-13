@@ -1,4 +1,15 @@
-import { OEM, Model, UOM, Product, WorkOrder } from "@/types";
+import { 
+  OEM, 
+  Model, 
+  UOM, 
+  Product, 
+  WorkOrder, 
+  InventoryItem, 
+  InventoryTransaction, 
+  BOM, 
+  BOMItem, 
+  WorkOrderStep 
+} from "@/types";
 
 export const sampleOEMs: OEM[] = [
   { id: "1", name: "Toyota", createdAt: "2024-01-15" },
@@ -84,8 +95,230 @@ export const sampleProducts: Product[] = [
 ];
 
 export const sampleWorkOrders: WorkOrder[] = [
-  { id: "1", number: "WO-2024-001", status: "IN_PROGRESS", createdAt: "2024-03-01" },
-  { id: "2", number: "WO-2024-002", status: "PENDING", createdAt: "2024-03-02" },
-  { id: "3", number: "WO-2024-003", status: "COMPLETED", createdAt: "2024-02-28" },
-  { id: "4", number: "WO-2024-004", status: "IN_PROGRESS", createdAt: "2024-03-03" },
+  { 
+    id: "1", 
+    number: "WO-2024-001", 
+    productId: "1",
+    productName: "Engine Block",
+    quantity: 10,
+    status: "IN_PROGRESS", 
+    startDate: "2024-03-01",
+    endDate: "2024-03-15",
+    progress: 60,
+    currentStep: "WELDING",
+    createdAt: "2024-03-01" 
+  },
+  { 
+    id: "2", 
+    number: "WO-2024-002", 
+    productId: "2",
+    productName: "Brake Pad Set",
+    quantity: 50,
+    status: "PENDING", 
+    startDate: "2024-03-05",
+    progress: 0,
+    currentStep: "CUTTING",
+    createdAt: "2024-03-02" 
+  },
+  { 
+    id: "3", 
+    number: "WO-2024-003", 
+    productId: "3",
+    productName: "Oil Filter",
+    quantity: 100,
+    status: "COMPLETED", 
+    startDate: "2024-02-28",
+    endDate: "2024-03-05",
+    progress: 100,
+    currentStep: "FINISHED_GOODS",
+    createdAt: "2024-02-28" 
+  },
+  { 
+    id: "4", 
+    number: "WO-2024-004", 
+    productId: "1",
+    productName: "Engine Block",
+    quantity: 5,
+    status: "IN_PROGRESS", 
+    startDate: "2024-03-03",
+    progress: 25,
+    currentStep: "CUTTING",
+    createdAt: "2024-03-03" 
+  },
+];
+
+export const sampleInventoryItems: InventoryItem[] = [
+  {
+    id: "1",
+    productId: "4",
+    productName: "Steel Sheet",
+    productCode: "STL-001",
+    batchNo: "B2024001",
+    location: "Raw Material Store",
+    quantityOnHand: 500,
+    reservedQuantity: 50,
+    availableQuantity: 450,
+    uomId: "2",
+    uomCode: "KG",
+    status: "AVAILABLE",
+    lastUpdated: "2024-03-10"
+  },
+  {
+    id: "2",
+    productId: "1",
+    productName: "Engine Block",
+    productCode: "ENG-001",
+    batchNo: "B2024002",
+    location: "Finished Goods",
+    quantityOnHand: 25,
+    reservedQuantity: 10,
+    availableQuantity: 15,
+    uomId: "1",
+    uomCode: "PCS",
+    status: "AVAILABLE",
+    lastUpdated: "2024-03-10"
+  },
+  {
+    id: "3",
+    productId: "2",
+    productName: "Brake Pad Set",
+    productCode: "BRK-001",
+    batchNo: "B2024003",
+    location: "Warehouse A",
+    quantityOnHand: 5,
+    reservedQuantity: 0,
+    availableQuantity: 5,
+    uomId: "5",
+    uomCode: "SET",
+    status: "LOW_STOCK",
+    lastUpdated: "2024-03-09"
+  },
+  {
+    id: "4",
+    productId: "3",
+    productName: "Oil Filter",
+    productCode: "FLT-001",
+    batchNo: "B2024004",
+    location: "Production Floor",
+    quantityOnHand: 0,
+    reservedQuantity: 0,
+    availableQuantity: 0,
+    uomId: "1",
+    uomCode: "PCS",
+    status: "OUT_OF_STOCK",
+    lastUpdated: "2024-03-08"
+  }
+];
+
+export const sampleBOMs: BOM[] = [
+  {
+    id: "1",
+    productId: "1",
+    productName: "Engine Block",
+    version: "V1.0",
+    isActive: true,
+    items: [
+      {
+        id: "1",
+        bomId: "1",
+        componentId: "4",
+        componentName: "Steel Sheet",
+        componentCode: "STL-001",
+        quantity: 15,
+        uomId: "2",
+        uomCode: "KG",
+        step: "CUTTING"
+      }
+    ],
+    createdAt: "2024-01-20"
+  }
+];
+
+export const sampleWorkOrderSteps: WorkOrderStep[] = [
+  {
+    id: "1",
+    workOrderId: "1",
+    step: "CUTTING",
+    status: "COMPLETED",
+    startTime: "2024-03-01T08:00:00",
+    endTime: "2024-03-01T12:00:00",
+    completedBy: "John Smith",
+    remarks: "Cutting completed as per specifications",
+    requiredMaterials: [
+      {
+        id: "1",
+        bomId: "1",
+        componentId: "4",
+        componentName: "Steel Sheet",
+        componentCode: "STL-001",
+        quantity: 15,
+        uomId: "2",
+        uomCode: "KG",
+        step: "CUTTING"
+      }
+    ]
+  },
+  {
+    id: "2",
+    workOrderId: "1",
+    step: "WELDING",
+    status: "IN_PROGRESS",
+    startTime: "2024-03-02T08:00:00",
+    requiredMaterials: []
+  },
+  {
+    id: "3",
+    workOrderId: "1",
+    step: "ASSEMBLY",
+    status: "PENDING",
+    requiredMaterials: []
+  },
+  {
+    id: "4",
+    workOrderId: "1",
+    step: "QA",
+    status: "PENDING",
+    requiredMaterials: []
+  },
+  {
+    id: "5",
+    workOrderId: "1",
+    step: "FINISHED_GOODS",
+    status: "PENDING",
+    requiredMaterials: []
+  }
+];
+
+export const sampleInventoryTransactions: InventoryTransaction[] = [
+  {
+    id: "1",
+    date: "2024-03-10T10:30:00",
+    productId: "4",
+    productName: "Steel Sheet",
+    productCode: "STL-001",
+    quantity: 15,
+    type: "ISSUE",
+    workOrderId: "1",
+    workOrderNumber: "WO-2024-001",
+    step: "CUTTING",
+    location: "Raw Material Store",
+    batchNo: "B2024001",
+    userId: "user1",
+    userName: "John Smith",
+    remarks: "Issued for engine block cutting"
+  },
+  {
+    id: "2",
+    date: "2024-03-09T14:15:00",
+    productId: "2",
+    productName: "Brake Pad Set",
+    productCode: "BRK-001",
+    quantity: 20,
+    type: "RECEIVE",
+    location: "Warehouse A",
+    batchNo: "B2024003",
+    userId: "user2",
+    userName: "Jane Doe",
+    remarks: "Received from production"
+  }
 ];
